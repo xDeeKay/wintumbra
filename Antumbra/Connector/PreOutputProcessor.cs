@@ -77,7 +77,7 @@ namespace Antumbra.Glow.Connector {
                 devSettings.redBias = Convert.ToInt16(settings.redBias << 8);
                 devSettings.greenBias = Convert.ToInt16(settings.greenBias << 8);
                 devSettings.blueBias = Convert.ToInt16(settings.blueBias << 8);
-                var avgBias = (Math.Abs(settings.redBias) + Math.Abs(settings.greenBias) + Math.Abs(settings.blueBias) / 3);
+                var avgBias = (Math.Abs(settings.redBias) + Math.Abs(settings.greenBias) + Math.Abs(settings.blueBias)) / 3;
                 devSettings.whiteBalanceMin = Convert.ToUInt16(avgBias);
                 devSettings.weightingEnabled = settings.weightingEnabled;
                 devSettings.newColorWeight = settings.newColorWeight;
@@ -96,6 +96,7 @@ namespace Antumbra.Glow.Connector {
 
             if(Color16BitUtil.GetAvgBrightness(newCol) < 50) {
                 AnnounceColor(Black, id, index);
+                return;
             }
 
             // Either first run or valid index
