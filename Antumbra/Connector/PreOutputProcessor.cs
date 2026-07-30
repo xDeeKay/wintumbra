@@ -95,27 +95,26 @@ namespace Antumbra.Glow.Connector {
             }
 
             if(Color16BitUtil.GetAvgBrightness(newCol) < 50) {
-                AnnounceColor(Black, id, index);
-                return;
-            }
+                newCol = Black;
+            } else {
+                // Either first run or valid index
+                int red = newCol.red;
+                int green = newCol.green;
+                int blue = newCol.blue;
+                // White balance
+                if(Color16BitUtil.GetAvgBrightness(newCol) > settings.whiteBalanceMin) {
+                    red += settings.redBias;
+                    green += settings.greenBias;
+                    blue += settings.blueBias;
+                }
+                newCol = Color16BitUtil.FunnelIntoColor(red, green, blue);
 
-            // Either first run or valid index
-            int red = newCol.red;
-            int green = newCol.green;
-            int blue = newCol.blue;
-            // White balance
-            if(Color16BitUtil.GetAvgBrightness(newCol) > settings.whiteBalanceMin) {
-                red += settings.redBias;
-                green += settings.greenBias;
-                blue += settings.blueBias;
-            }
-            newCol = Color16BitUtil.FunnelIntoColor(red, green, blue);
-
-            // Scale brightness
-            try {
-                newCol = Color16BitUtil.ScaleColor(newCol, settings.MaxBrightness);
-            } catch(ArgumentException ex) {
-                Log(ex.Message + '\n' + ex.StackTrace);
+                // Scale brightness
+                try {
+                    newCol = Color16BitUtil.ScaleColor(newCol, settings.MaxBrightness);
+                } catch(ArgumentException ex) {
+                    Log(ex.Message + '\n' + ex.StackTrace);
+                }
             }
 
             // Add to weighted average
